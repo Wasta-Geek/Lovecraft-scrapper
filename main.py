@@ -6,6 +6,8 @@ which can be found at https://github.com/Wasta-Geek/Lovecraft-scrapper/blob/mast
 """
 
 import argparse
+import sys
+from lovecraft_scrapper.lovecraft_page import LovecraftPage, LovecraftPageUnavailable
 
 
 def parse_arguments() -> argparse.Namespace:
@@ -22,14 +24,19 @@ def parse_arguments() -> argparse.Namespace:
     return args
 
 
-def lovecraft_scrapper() -> None:
+def lovecraft_scrapper_main() -> None:
     """
-
-    :param args: arguments object
+    Scrap a Lovecraft webpage and display some statistics about it
     """
     args = parse_arguments()
-    print(args.url)
+    lovecraft_page = LovecraftPage(args.url)
+    try:
+        lovecraft_page.open_webpage()
+    except LovecraftPageUnavailable:
+        print(f"Cannot retrieve webpage content, please verify the target URL '{args.url}'"
+              " and your internet connection")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    lovecraft_scrapper()
+    lovecraft_scrapper_main()
