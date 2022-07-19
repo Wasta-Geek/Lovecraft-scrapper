@@ -1,8 +1,7 @@
 """Manage a Lovecraft page and it's parsing"""
 
-import urllib.request
-import urllib.error
-import urllib.response
+import bs4
+from .page import Page
 
 
 class LovecraftPageUnavailable(RuntimeError):
@@ -11,36 +10,34 @@ class LovecraftPageUnavailable(RuntimeError):
     """
 
 
-class LovecraftPage:
+class LovecraftPage(Page):
     """
     A class to represent a Lovecraft page
     """
 
-    def __init__(self, url: str):
-        if not url.startswith("http"):
-            print(f"[info] Url '{url}' doesn't include any http(s) scheme,"
-                  f" adding default http scheme")
-            self.__url = "http://" + url
-        else:
-            self.__url = url
-        self.__raw_webpage_content = ''
+    def _fill_page_info(self) -> None:
+        """
 
-    @property
-    def raw_webpage_content(self) -> str:
         """
-        Get raw_webpage_content variable
-        :return: raw_webpage_content variable
-        """
-        return self.__raw_webpage_content
+        soup = bs4.BeautifulSoup(self._raw_webpage_content, 'html.parser')
+        page_layout_div = soup.find('div', class_='pagelayout')
+        navigation_tr = page_layout_div.find_next('tr')
+        title_tr = navigation_tr.find_next_siblings('tr')[0]
+        main_text_tr = title_tr.find_next('tr')
 
-    def open_webpage(self) -> None:
-        """
-        Open a connection with the website and retrieve the page content
+        title_text = title_tr.get_text().lstrip("\n")
+        # main_text = main_text_tr.get_text()
+        self._page_info.title = title_text
 
-        :return: A string containing the webpage content
-        """
-        try:
-            with urllib.request.urlopen(self.__url) as response:
-                self.__raw_webpage_content = response.read()
-        except urllib.error.URLError as error:
-            raise LovecraftPageUnavailable() from error
+        center_list = main_text_tr.find_all("center")
+        # blockquotes_list = main_text_tr.find_all("blockquote")
+
+        chapter_list = []
+        for center_element in center_list:
+            if center_element.parent.name == "br":
+                center_element_text = center_element.get_text()
+                if center_element_text.find("\n") == -1:
+                    chapter_list.append(center_element_text)
+        self.page_info.chapter_count = len(chapter_list)
+        print(self.page_info.url)
+        print(self.page_info.title)
