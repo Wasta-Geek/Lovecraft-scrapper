@@ -25,10 +25,9 @@ class LovecraftPage(Page):
         center_list = main_text_font_bs4.find_all("center")
         chapter_list = []
         for center_element in center_list:
-            if center_element.parent.name == "br":
-                center_element_text = center_element.get_text()
-                if center_element_text.find("\n") == -1:
-                    chapter_list.append(center_element_text)
+            center_element_text = center_element.get_text()
+            if center_element_text.find("\n") == -1 and center_element_text.strip("—") != "":
+                chapter_list.append(center_element_text)
         return chapter_list
 
     @staticmethod

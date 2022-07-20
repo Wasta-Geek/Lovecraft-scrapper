@@ -220,9 +220,9 @@ class PageInfo(BaseTextInfo):
 
     def __str__(self):
         chapters_info = ""
-        for chapter_key in self._chapter_dict.items():
-            chapters_info = chapters_info + f"Chapter: {chapter_key.index(0)}\n" + \
-                            str(chapter_key.index(1)) + \
+        for chapter_item in self._chapter_dict.items():
+            chapters_info = chapters_info + f"Chapter: {chapter_item[0]}\n" + \
+                            str(chapter_item[1]) + \
                             "\n"
         return "---------PAGE---------\n\n" + \
                f"Page url: {self.url}\n" + \
