@@ -93,6 +93,8 @@ class LovecraftPage(Page):
 
         # compute page info
         self._page_info.compute_page()
+        # Print info
+        print(self._page_info)
 
     def _fill_page_info(self) -> None:
         """

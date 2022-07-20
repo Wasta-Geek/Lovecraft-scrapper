@@ -31,6 +31,9 @@ class BaseTextInfo:
         self._letter_count = letter_count
         self._word_count = word_count
 
+    def __str__(self):
+        return f"Letter count: {self._letter_count}\nWord count: {self._word_count}\n"
+
     @property
     def letter_count(self) -> int:
         """
@@ -98,6 +101,9 @@ class ParagraphInfo(BaseTextInfo):
         super().__init__(letter_count=letter_count, word_count=word_count)
         self._paragraph_content = paragraph_content
 
+    def __str__(self):
+        return super().__str__() + ""
+
     @property
     def paragraph_content(self) -> str:
         """
@@ -128,6 +134,10 @@ class ChapterInfo(BaseTextInfo):
         self._average_letter: int = 0
         self._average_word: int = 0
         self._paragraph_list_object: [ParagraphInfo] = None
+
+    def __str__(self):
+        return super().__str__() + f"Average letter: {self._average_letter}\n" \
+                                   f"Average word: {self._average_word}\n"
 
     @property
     def average_letter(self) -> int:
@@ -207,6 +217,22 @@ class PageInfo(BaseTextInfo):
         self._average_word: int = 0
         # Average paragraph count by chapter
         self._average_paragraph_count: int = 0
+
+    def __str__(self):
+        chapters_info = ""
+        for chapter_key in self._chapter_dict.items():
+            chapters_info = chapters_info + f"Chapter: {chapter_key.index(0)}\n" + \
+                            str(chapter_key.index(1)) + \
+                            "\n"
+        return "---------PAGE---------\n\n" + \
+               f"Page url: {self.url}\n" + \
+               f"Title of the story: {self.title}\n" + \
+               f"Average letter: {self._average_letter}\n" + \
+               f"Average word: {self._average_word}\n" + \
+               f"Average paragraph by chapter: {self._average_paragraph_count}\n" + \
+               super().__str__() + "\n" + \
+               "---------CHAPTERS---------\n\n" + \
+               chapters_info
 
     @property
     def chapter_dict(self) -> dict:
