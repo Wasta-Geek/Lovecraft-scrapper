@@ -52,11 +52,13 @@ class Page(ABC):
         """
         try:
             with urllib.request.urlopen(self.page_info.url) as response:
-                self._raw_webpage_content = response.read()
+                self._raw_webpage_content = response.read().decode('utf-8')
                 self._fill_page_info()
         except urllib.error.URLError as error:
             raise PageUnavailable() from error
 
     @abstractmethod
     def _fill_page_info(self) -> None:
-        pass
+        """
+        Abstract method that fill the internal _page_info object with the available info extracted
+        """
