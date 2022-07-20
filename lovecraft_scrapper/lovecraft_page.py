@@ -87,9 +87,8 @@ class LovecraftPage(Page):
                     else:
                         # It's a blockquote or a special "display" in the paragraph
                         # so we need to add it to the last paragraph built
-                        self._page_info.chapter_dict[chapter_list[chapter_counter]]\
-                            .paragraph_list_object[-1].\
-                            append_new_text("\n" + string_stripped)
+                        self._page_info.chapter_dict[chapter_list[chapter_counter]].\
+                            append_text_to_last_paragraph("\n" + string_stripped)
                     new_paragraph = string_stripped.endswith((".", "?", "!", "\"", "”"))
 
         # compute page info
