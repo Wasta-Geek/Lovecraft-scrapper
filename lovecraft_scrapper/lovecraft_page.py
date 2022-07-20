@@ -1,7 +1,6 @@
 """Manage a Lovecraft page and it's parsing"""
 
 import bs4
-import pandas
 from .page import Page
 
 
@@ -49,8 +48,7 @@ class LovecraftPage(Page):
                 element = parent
         main_text_font_bs4.smooth()
 
-    @staticmethod
-    def __build_text_object(main_text_font_bs4: bs4.BeautifulSoup) -> dict:
+    def __build_chapter_dict(self, main_text_font_bs4: bs4.BeautifulSoup) -> None:
         """
         Scrap the given  BeautifulSoup object and return a dict containing the chapter (key)
         with all the paragraph associated (values)
@@ -67,9 +65,6 @@ class LovecraftPage(Page):
 
         # Init vars
         new_paragraph = True
-        book_object = {}
-        for chapter in chapter_list:
-            book_object[chapter] = []
 
         # Iter over the line list
         for string in main_text_font_bs4.strings:
@@ -79,17 +74,26 @@ class LovecraftPage(Page):
             is_separator_line = string_stripped.strip("—") == ""
             # Check if it's an empty line of a separator line, then we skip
             if len(string_stripped) > 0 and not is_separator_line:
+                # Detect if we begin a new chapter
                 if chapter_counter < len(chapter_list) - 1 and \
                         string_stripped == chapter_list[chapter_counter + 1]:
                     chapter_counter = chapter_counter + 1
+                    self._page_info.create_new_chapter(chapter_list[chapter_counter])
                 else:
                     if new_paragraph:
-                        book_object[chapter_list[chapter_counter]].append(string_stripped)
+                        # Push a new paragraph with the current content and current info
+                        self._page_info.chapter_dict[chapter_list[chapter_counter]].\
+                            create_new_paragraph(new_paragraph_text=string_stripped)
                     else:
-                        book_object[chapter_list[chapter_counter]][-1] = \
-                            book_object[chapter_list[chapter_counter]][-1] + "\n" + string_stripped
+                        # It's a blockquote or a special "display" in the paragraph
+                        # so we need to add it to the last paragraph built
+                        self._page_info.chapter_dict[chapter_list[chapter_counter]]\
+                            .paragraph_list_object[-1].\
+                            append_new_text("\n" + string_stripped)
                     new_paragraph = string_stripped.endswith((".", "?", "!", "\"", "”"))
-        return book_object
+
+        # compute page info
+        self._page_info.compute_page()
 
     def _fill_page_info(self) -> None:
         """
@@ -115,9 +119,4 @@ class LovecraftPage(Page):
 
         # Parse the line list and retrieve a text_object
         # containing a key/value chapter : paragraph_list
-        text_object = LovecraftPage.__build_text_object(main_text_font)
-
-        # Count the number of chapters
-        self.page_info.chapter_count = len(text_object.keys())
-        main_text_series = pandas.Series(text_object)
-        print(main_text_series)
+        self.__build_chapter_dict(main_text_font)

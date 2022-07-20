@@ -22,12 +22,11 @@ class Page(ABC):
         if not url.startswith("http"):
             print(f"[info] Url '{url}' doesn't include any http(s) scheme,"
                   f" adding default http scheme")
-            self._page_info = PageInfo( "http://" + url)
+            self._page_info = PageInfo(url="http://" + url)
         else:
-            self._page_info = PageInfo(url)
+            self._page_info = PageInfo(url=url)
         self._raw_webpage_content = ''
         self._main_text = ''
-
 
     @property
     def raw_webpage_content(self) -> str:
