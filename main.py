@@ -35,13 +35,15 @@ def lovecraft_scrapper_main() -> None:
         lovecraft_page.open_webpage()
     except PageUnavailable:
         print(f"Cannot retrieve webpage content, please verify the target URL '{args.url}'"
-              " and your internet connection")
+              " and your internet connection.")
         sys.exit(1)
     except (PageDecodingError, PageParsingError):
         print("An error occurred while parsing the webpage, "
               "are you sure you gave a URL to a fiction of the site "
               "'www.hplovecraft.com/writings/texts/fiction/*' ?")
         sys.exit(2)
+    else:
+        sys.exit(0)
 
 
 if __name__ == "__main__":
