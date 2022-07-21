@@ -1,13 +1,7 @@
 """Manage a Lovecraft page and it's parsing"""
 
 import bs4
-from .page import Page
-
-
-class LovecraftPageUnavailable(RuntimeError):
-    """
-    Raised when the given website cannot be opened
-    """
+from .page import Page, PageParsingError
 
 
 class LovecraftPage(Page):
@@ -111,15 +105,23 @@ class LovecraftPage(Page):
 
         # Navigate through the tree to retrieve the element we want
         page_layout_div = soup.find('div', class_='pagelayout')
+        if page_layout_div is None:
+            raise PageParsingError()
         navigation_tr = page_layout_div.find_next('tr')
+        if navigation_tr is None:
+            raise PageParsingError()
 
         # Navigate through html tree and store title
         title_tr = navigation_tr.find_next_siblings('tr')[0]
+        if title_tr is None:
+            raise PageParsingError()
         title_text = title_tr.get_text(separator='\n').lstrip("\r\n")
         self._page_info.title = title_text.split('\n')[0]
 
         # Navigate through html tree and find the main text part
         main_text_font = title_tr.find_next('tr').font
+        if main_text_font is None:
+            raise PageParsingError()
 
         # Parse the line list and retrieve a text_object
         # containing a key/value chapter : paragraph_list

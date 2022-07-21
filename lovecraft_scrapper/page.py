@@ -13,6 +13,18 @@ class PageUnavailable(RuntimeError):
     """
 
 
+class PageDecodingError(RuntimeError):
+    """
+    Raised when the given website content cannot be decoded properly
+    """
+
+
+class PageParsingError(RuntimeError):
+    """
+    Raised when an error occurs while parsing the webpage
+    """
+
+
 class Page(ABC):
     """
     An abstract class that represents a generic page
@@ -55,6 +67,8 @@ class Page(ABC):
                 self._fill_page_info()
         except urllib.error.URLError as error:
             raise PageUnavailable() from error
+        except UnicodeDecodeError as error:
+            raise PageDecodingError() from error
 
     @abstractmethod
     def _fill_page_info(self) -> None:
