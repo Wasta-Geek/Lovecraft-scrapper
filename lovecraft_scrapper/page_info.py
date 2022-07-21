@@ -136,8 +136,10 @@ class ChapterInfo(BaseTextInfo):
         self._paragraph_list_object: [ParagraphInfo] = None
 
     def __str__(self):
-        return super().__str__() + f"Average letter: {self._average_letter}\n" \
-                                   f"Average word: {self._average_word}\n"
+        return super().__str__() +\
+               f"Number of paragraph: {len(self._paragraph_list_object)}\n" +\
+               f"Average letter: {self._average_letter}\n" \
+               + f"Average word: {self._average_word}\n"
 
     @property
     def average_letter(self) -> int:
