@@ -1,6 +1,8 @@
 # Lovecraft-scrapper
 
-[Test] The goal is simple: create a python program that retrieves data from a specific URL and print some related statistics
+[Test] The goal is simple: create a python program that retrieves data from a specific URL and print some related statistics.
+
+__PS: Only works for the webpages on this website: https://hplovecraft.com/writings/texts/*__
 
 ## Usage
 
