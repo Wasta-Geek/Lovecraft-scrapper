@@ -60,7 +60,7 @@ class LovecraftPage(Page):
 
         # Retrieve chapter list
         chapter_list = LovecraftPage.__extract_chapter_list(main_text_font_bs4)
-        chapter_counter = -1 if len(chapter_list) == 0 else 0
+        chapter_counter = -1 if len(chapter_list) > 0 else 0
 
         if len(chapter_list) == 0:
             chapter_list.append("I.")
